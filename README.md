@@ -4,6 +4,12 @@ A multiplayer, real-time hospital-room simulator for med students. It's 3:00 AM,
 
 > Educational simulation, not medical advice.
 
+## 🎬 Demo video
+
+[![Code Blue: Haunted Ward, demo video (click to watch on YouTube)](https://img.youtube.com/vi/jmDGdqn56ms/hqdefault.jpg)](https://youtu.be/jmDGdqn56ms)
+
+▶️ **Watch:** https://youtu.be/jmDGdqn56ms
+
 **Live:** https://code-blue-haunted-ward.style.dev (hosted on Freestyle, see [DEPLOY.md](DEPLOY.md))
 
 ## Student demo walkthrough (~6 minutes, every feature)
