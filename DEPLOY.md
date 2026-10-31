@@ -37,10 +37,27 @@ Re-running it ships the latest commit to the same VM and URL. Rooms and patients
 
 Use another name: `FREESTYLE_SLUG=my-ward bun run deploy:freestyle` → `https://my-ward.style.dev`.
 
+## "There's nothing here yet" / "no VM is mapped"
+
+The domain has no rule pointing at a VM yet, usually because the deploy stopped before its last
+step. Run the publish step on its own: it finds the VM, removes any stale rule for the domain,
+creates the right one, and checks the app is answering inside the VM:
+
+```bash
+bun run publish:freestyle
+```
+
+If it says the app isn't answering inside the VM, run the full deploy again and read its output.
+Every step is numbered (1/5 … 5/5), so the failing one is easy to spot:
+
+```bash
+bun run deploy:freestyle
+```
+
 ## Operate
 
 ```bash
-npx freestyle@latest vm exec code-blue-haunted-ward -- tail -n 50 /opt/code-blue/logs/api.log
+npx freestyle@latest vm exec code-blue-haunted-ward --linux-user root -- tail -n 50 /opt/code-blue/logs/api.log
 ```
 ```bash
 npx freestyle@latest vm ssh code-blue-haunted-ward

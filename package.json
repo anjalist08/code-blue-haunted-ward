@@ -16,7 +16,8 @@
     "test": "bun test",
     "build": "durable-actors generate src/actors.ts && tsc --noEmit && vite build",
     "serve": "bun scripts/serve.ts",
-    "deploy:freestyle": "bash scripts/freestyle/deploy.sh"
+    "deploy:freestyle": "bash scripts/freestyle/deploy.sh",
+    "publish:freestyle": "bash scripts/freestyle/publish.sh"
   },
   "dependencies": {
     "@agent-relay/sdk": "^15.0.1",
