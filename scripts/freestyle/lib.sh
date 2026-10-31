@@ -1,4 +1,6 @@
 # Shared helpers for the Freestyle scripts (sourced, not run).
+# Never fail silently: name the line and command that stopped the script.
+trap 'code=$?; printf "\n\033[1;31m✖ stopped (exit %s) at %s line %s: %s\033[0m\n" "$code" "${BASH_SOURCE[0]##*/}" "$LINENO" "$BASH_COMMAND" >&2' ERR
 SLUG="${FREESTYLE_SLUG:-code-blue-haunted-ward}"
 DOMAIN="${FREESTYLE_DOMAIN:-$SLUG.style.dev}"
 URL="https://$DOMAIN"
