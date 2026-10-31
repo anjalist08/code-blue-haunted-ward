@@ -4,6 +4,58 @@ A multiplayer, real-time hospital-room simulator for med students. It's 3:00 AM,
 
 > Educational simulation, not medical advice.
 
+**Live:** https://code-blue-haunted-ward.style.dev (hosted on Freestyle, see [DEPLOY.md](DEPLOY.md))
+
+## Student demo walkthrough (~6 minutes, every feature)
+
+### Setup (before you go on stage)
+
+1. **Big screen (laptop):** open https://code-blue-haunted-ward.style.dev → **Open Bed 13** → 🔈 for sound.
+2. **Your phone:** scan the QR code → type your name → **🩺 Join as Doctor**.
+3. Check the header shows **Terse actor live** and **Agent Relay**.
+4. Practice voice once: tap **🎙️ Voice**, allow the microphone, say "hello", tap again to hang up.
+
+### Walkthrough
+
+Use the `+m:ss` clock in the header. Type each input, tap the matching option, or say it with 🎙️ Voice.
+
+| Clock | Input | What the audience sees |
+| --- | --- | --- |
+| 0:00 | Tap **▶ Start the night shift** | The nurse's handoff; heart beats, ECG runs, skeleton hands appear |
+| 0:10 | `Do you take any medications?` | Patient admits the "little blue pill" (sildenafil); bony hand on his shoulder |
+| 0:20 | `How bad is the pain?` | AI patient answers in character |
+| 0:30 | `Activate the cath lab` | The attending **says no**: "Show me a 12-lead first" (agents talking over Agent Relay) |
+| 0:40 | 🎙️ Say **"Get a troponin and an ECG"** | Voice turns into two orders; hands place electrodes, then draw blood; the ECG shows the heart attack; the attending asks a question |
+| 1:00 | `Give nitroglycerin` | **The pharmacist blocks it** (the sildenafil trap) |
+| 1:10 | `Put him on oxygen` | Hands fit the oxygen tube under his nose |
+| 1:20 | `Nurse, what's his blood pressure doing?` | The nurse answers from his chart |
+| 1:35 | **Close the tab on your phone**, wait 30 s, scan again | **He kept getting worse while you were gone** (durable Terse actor) |
+| ~2:55 | Wait for **V-TACH** | Lights flicker, red alarm, the room glows red |
+| right away | `Push 2 of midazolam` | Sedation: syringe into the IV |
+| +5 s | `Synchronized cardioversion 100 joules` | Paddles, jolt, electric arcs on the heart, back to a normal rhythm. If the nurse says "still in V-tach", send it again (you have ~45 s before V-fib) |
+| ~3:10 | `Chew 324 of aspirin` | Pill to the mouth; target ring on the clot |
+| ~3:15 | `Amiodarone 150 IV` | Calms the irritable heart muscle |
+| ~3:20 | `Call the cath lab`, then tap **⇄** | Approved now; the zoomed heart view shows the catheter threading into the artery (60 s countdown) |
+| ~4:05 | Watch | **Stent goes in, the artery turns red, blood flows** |
+| ~4:10 | `Start heparin`, then `Give a 500 bolus of saline` | Syringe into the IV; a hand squeezes the saline bag |
+| ~5:05 | Watch | **Stabilized**; the lights calm down |
+| End | **📋 Debrief → Generate AI debrief** | The attending grades your timeline |
+
+**While you wait for V-tach (1:35 to 2:55):** in the zoomed heart view, tap the green dots for teaching labels and use **Hide/Show anatomy colours**; on the laptop, switch **Guided mode → Exam mode** (hides the hints) and back; drag either 3D view to rotate it.
+
+**Timing rules:**
+
+- **Don't give aspirin before V-tach.** It pushes V-tach back to about 5:00, and the nurse refuses it during V-tach because he can't chew.
+- **Each voice session hangs up after 3 minutes** to save credit. Start it right before you need it; tap again to stop.
+
+**Optional, a full cardiac arrest** (in V-tach, instead of the cardioversion row): `Shock him, unsynchronized` (the trap: he goes into V-fib) → `Start CPR` (skeleton hands do compressions) → `Defibrillate 200 joules` (repeat if needed; each shock works ~70% of the time) → `Epinephrine 1 mg`. Then continue from the aspirin row.
+
+**Reset between runs:** on the laptop, tap **↺ Reset**. The same room code and QR code keep working.
+
+**Voice on iPhone:** open the `https://` address in Safari (not a QR scanner's in-app browser). If the mic was refused once, tap **aA** → **Website Settings** → **Microphone** → **Allow**, then tap Voice again.
+
+The AI replies are worded differently every run; the timings and the order of events come from the physiology model and stay the same.
+
 ## What's in it
 
 | Piece | Where | What it does |
