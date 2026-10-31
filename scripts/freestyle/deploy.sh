@@ -16,7 +16,7 @@ grep -q '^OPENAI_API_KEY=sk-' .env || echo "⚠️  .env has no OPENAI_API_KEY: 
 if [ -n "$(git status --porcelain --untracked-files=no)" ]; then echo "⚠️  Uncommitted changes are NOT deployed (deploying the last commit: $(git rev-parse --short HEAD))."; fi
 
 step "1/5 Freestyle account"
-fs whoami || die "Not logged in. Run: npx freestyle@latest login   (or export FREESTYLE_API_KEY=...)"
+fs whoami || die "Not logged in. Run: $FS_HINT login   (or export FREESTYLE_API_KEY=...)"
 
 step "2/5 VM '$SLUG'"
 VM_ID="$(vm_id)"
@@ -27,7 +27,7 @@ if [ -z "$VM_ID" ]; then
         echo "retrying without the idle-timeout setting"
         VM_ID="$(fs vm create --slug "$SLUG" --no-ssh --output json | json 'v.id')" || true
     fi
-    [ -n "$VM_ID" ] || die "VM creation failed. Run: npx freestyle@latest vm create --slug $SLUG --no-ssh   to see why."
+    [ -n "$VM_ID" ] || die "VM creation failed. Run: $FS_HINT vm create --slug $SLUG --no-ssh   to see why."
     echo "created $VM_ID"
 else
     echo "reusing $VM_ID"
@@ -65,12 +65,12 @@ for i in $(seq 1 90); do
     if [ "$LINES" -gt "$SEEN" ]; then printf '%s\n' "$LOG" | tail -n +"$((SEEN + 1))"; SEEN="$LINES"; fi
     if printf '%s' "$LOG" | grep -q "✅ up"; then break; fi
     if printf '%s' "$LOG" | grep -q "❌"; then die "Setup failed on the VM (log above). Fix, commit, and run again."; fi
-    [ "$i" = 90 ] && die "Setup didn't finish in 7.5 min. Log: npx freestyle@latest vm exec $VM_ID --linux-user root -- tail -n 60 /tmp/code-blue-setup.log"
+    [ "$i" = 90 ] && die "Setup didn't finish in 7.5 min. Log: $FS_HINT vm exec $VM_ID --linux-user root -- tail -n 60 /tmp/code-blue-setup.log"
 done
 
 step "5/5 Publish"
 bash scripts/freestyle/publish.sh "$VM_ID"
 echo
 echo "   Open $URL on the big screen → Open Bed 13 → students scan the QR code."
-echo "   Logs:      npx freestyle@latest vm exec $SLUG --linux-user root -- tail -n 50 /opt/code-blue/logs/api.log"
+echo "   Logs:      $FS_HINT vm exec $SLUG --linux-user root -- tail -n 50 /opt/code-blue/logs/api.log"
 echo "   Re-point:  bun run publish:freestyle      Redeploy: bun run deploy:freestyle"

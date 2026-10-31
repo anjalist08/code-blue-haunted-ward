@@ -9,7 +9,7 @@ VM_ID="${1:-$(vm_id)}"
 [ -n "$VM_ID" ] || die "No VM with slug '$SLUG'. Run: bun run deploy:freestyle"
 
 step "Publish $URL → $VM_ID port $PORT_PUBLIC"
-RULES="$(fs tls list --output json)" || die "Couldn't list TLS rules (logged in? npx freestyle@latest whoami)"
+RULES="$(fs tls list --output json)" || die "Couldn't list TLS rules (logged in? $FS_HINT whoami)"
 MATCHES="$(printf '%s' "$RULES" | json "(v.rules||[]).filter(r=>r.domain==='$DOMAIN').map(r=>[r.id,r.destination&&r.destination.vmId,r.destination&&r.destination.port].join(' ')).join('\n')")"
 OK=""
 while read -r RID RVM RPORT; do
@@ -32,7 +32,7 @@ if fs vm exec "$VM_ID" --linux-user root --timeout-ms 20000 -- curl -fsS -o /dev
     echo "yes"
 else
     echo "⚠️  Not answering on port $PORT_PUBLIC inside the VM. The app isn't running: check the setup log:"
-    echo "   npx freestyle@latest vm exec $VM_ID --linux-user root -- tail -n 40 /tmp/code-blue-setup.log"
+    echo "   $FS_HINT vm exec $VM_ID --linux-user root -- tail -n 40 /tmp/code-blue-setup.log"
     exit 1
 fi
 
