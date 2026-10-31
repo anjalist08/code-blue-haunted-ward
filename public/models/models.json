@@ -1,0 +1,12 @@
+{
+  "models": [
+    {
+      "url": "/models/heart.glb",
+      "name": "Human Heart 3D Model",
+      "credit": "NIH 3D (3DPX-022787), public domain",
+      "scale": 1,
+      "rotation": [0, 0, 0],
+      "color": null
+    }
+  ]
+}
