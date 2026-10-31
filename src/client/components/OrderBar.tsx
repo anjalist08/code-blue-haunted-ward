@@ -53,9 +53,11 @@ export function OrderBar({ state, api, canOrder, voiceEnabled, onToast }: { stat
         })
         voice.current = v
         try {
-            const session = await api.voice()
+            // Mic first, inside the tap (iPhone Safari refuses it after an await), session second.
+            const [, session] = await Promise.all([v.begin(), api.voice()])
             await v.start(session)
         } catch (e) {
+            v.stop()
             setStatus("error")
             onToast((e as Error).message)
         }

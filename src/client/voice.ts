@@ -19,17 +19,43 @@ export class RealtimeVoice {
 
     constructor(private events: Events) {}
 
+    /**
+     * Step 1, called synchronously from the tap: iPhone Safari only grants the microphone and
+     * audio playback while the user's tap is still "active", so this must run before any await
+     * (e.g. before fetching the voice session from our server).
+     */
+    begin(): Promise<void> {
+        this.events.onStatus("connecting")
+        if (!navigator.mediaDevices?.getUserMedia) {
+            return Promise.reject(new Error("Voice needs HTTPS. Open the https:// address of this app."))
+        }
+        // Unlock audio output on iOS by starting playback inside the tap.
+        this.audio = document.createElement("audio")
+        this.audio.autoplay = true
+        this.audio.setAttribute("playsinline", "")
+        this.audio.srcObject = new MediaStream()
+        void this.audio.play().catch(() => undefined)
+        return navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } }).then(
+            stream => {
+                this.mic = stream
+            },
+            error => {
+                throw new Error(micErrorMessage(error))
+            }
+        )
+    }
+
+    /** Step 2: connect to OpenAI Realtime with the session our server minted. Call begin() first. */
     async start(session: { clientSecret: string; model: string; maxSeconds: number }) {
         this.events.onStatus("connecting")
         try {
-            if (!navigator.mediaDevices?.getUserMedia) throw new Error("Microphone needs HTTPS (or localhost). Use PUBLIC_URL with a tunnel for phones.")
-            this.mic = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } })
+            if (!this.mic) throw new Error("Microphone not ready")
             const pc = new RTCPeerConnection()
             this.pc = pc
-            this.audio = new Audio()
-            this.audio.autoplay = true
             pc.ontrack = e => {
-                this.audio!.srcObject = e.streams[0]!
+                if (!this.audio) return
+                this.audio.srcObject = e.streams[0]!
+                void this.audio.play().catch(() => undefined)
             }
             pc.addTrack(this.mic.getAudioTracks()[0]!, this.mic)
             const dc = pc.createDataChannel("oai-events")
@@ -109,4 +135,19 @@ export class RealtimeVoice {
         this.endsAt = 0
         this.events.onStatus("idle", reason)
     }
+}
+
+/** Human instructions for the ways a browser refuses the microphone. */
+export function micErrorMessage(error: unknown): string {
+    const name = (error as { name?: string })?.name ?? ""
+    const ios = /iPhone|iPad|iPod/.test(navigator.userAgent)
+    if (name === "NotAllowedError" || name === "SecurityError") {
+        return ios
+            ? "Microphone blocked. In Safari tap “aA” (or ⋯) → Website Settings → Microphone → Allow, then tap Voice again. Also check Settings → Safari → Microphone."
+            : "Microphone blocked. Click the 🔒 / site settings icon next to the address, allow the microphone, then try Voice again."
+    }
+    if (name === "NotSupportedError") return ios ? "This browser can't use the microphone. Open the page in Safari (tap ⋯ → Open in Safari), then tap Voice." : "This browser can't use the microphone here. Open the page in Chrome or Safari, then tap Voice."
+    if (name === "NotFoundError" || name === "OverconstrainedError") return "No microphone found on this device."
+    if (name === "NotReadableError") return "The microphone is busy in another app (a call, or another tab). Close it and try again."
+    return (error as Error)?.message || "Couldn't start the microphone."
 }
