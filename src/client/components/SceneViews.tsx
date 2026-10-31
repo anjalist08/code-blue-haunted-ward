@@ -26,7 +26,7 @@ export function SceneViews({ state, clock }: { state: WardState | null; clock: B
     return (
         <>
             <div className="scene">
-                <Canvas key={`main-${main}`} camera={main === "room" ? { position: [1.25, 1.85, 1.55], fov: 45 } : { position: [0, 0.3, 6.2], fov: 40 }} dpr={[1, 2]}>
+                <Canvas key={`main-${main}`} camera={main === "room" ? { position: [-0.6, 2.0, 2.05], fov: 45 } : { position: [0, 0.3, 6.2], fov: 40 }} dpr={[1, 2]}>
                     {scene(main, true)}
                 </Canvas>
             </div>
