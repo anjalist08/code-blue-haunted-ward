@@ -4,10 +4,10 @@ import type { WardState } from "../sim/types"
 import { api, loadSession, roomApi, type ServerConfig } from "./api"
 import { BeatClock } from "./beat"
 import { Feed } from "./components/Feed"
-import { HeartScene } from "./components/HeartScene"
 import { Monitor } from "./components/Monitor"
 import { Options } from "./components/Options"
 import { OrderBar } from "./components/OrderBar"
+import { SceneViews } from "./components/SceneViews"
 import { useHeartModel } from "./heartModel"
 import { useBeeper } from "./sound"
 import { useWard } from "./useWard"
@@ -55,9 +55,7 @@ export function Ward({ code }: { code: string }) {
 
     return (
         <div className={`ward${crashing ? " crashing" : ""}${state?.outcome === "died" ? " died" : ""}`}>
-            <div className="scene">
-                <HeartScene state={state} clock={clock} />
-            </div>
+            <SceneViews state={state} clock={clock} />
 
             <header className="topbar">
                 <div className="brand">

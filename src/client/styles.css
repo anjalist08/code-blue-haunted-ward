@@ -918,3 +918,112 @@ h3 {
         position: fixed;
     }
 }
+
+/* ---------- Two 3D views: room + OR ---------- */
+.inset {
+    position: absolute;
+    top: 96px;
+    right: calc(min(380px, 30vw) + 24px);
+    width: min(300px, 24vw);
+    height: min(240px, 32vh);
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid rgba(57, 255, 136, 0.35);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6), 0 0 30px rgba(57, 255, 136, 0.08);
+    background: #020807;
+    display: flex;
+    flex-direction: column;
+}
+.inset canvas {
+    flex: 1;
+}
+.inset-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 8px 6px 12px;
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    color: var(--green);
+    background: rgba(2, 12, 9, 0.9);
+    border-bottom: 1px solid var(--line);
+}
+.inset-head button {
+    padding: 2px 10px;
+    font-size: 1rem;
+}
+.legend {
+    position: absolute;
+    top: 96px;
+    left: calc(min(340px, 28vw) + 24px);
+    max-width: 232px;
+    background: rgba(4, 14, 10, 0.72);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 7px 9px;
+    font-size: 0.7rem;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    backdrop-filter: blur(6px);
+}
+.legend-row {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+.legend-target {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    border-left: 3px solid;
+    padding: 4px 6px;
+    margin-bottom: 4px;
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 0 8px 8px 0;
+    animation: slidein 0.3s ease-out;
+}
+.dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex: none;
+}
+.dot.ring {
+    border: 2px solid;
+    background: transparent;
+    margin-top: 3px;
+    animation: flicker 1.5s infinite;
+}
+.legend-toggle {
+    margin-top: 4px;
+    font-size: 0.7rem;
+    padding: 4px 8px;
+}
+.target-tag {
+    background: rgba(2, 10, 8, 0.88);
+    border: 1px solid;
+    border-radius: 8px;
+    padding: 4px 8px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    pointer-events: none;
+}
+@media (max-width: 860px) {
+    .inset {
+        position: relative;
+        top: auto;
+        right: auto;
+        width: 100%;
+        height: 32vh;
+        order: 1;
+    }
+    .legend {
+        position: relative;
+        top: auto;
+        left: auto;
+        max-width: none;
+        order: 1;
+    }
+}
