@@ -93,6 +93,7 @@ Voice on phones needs HTTPS. Use the laptop for voice, or run `cloudflared tunne
 Tips:
 
 - Start the case 2 minutes before you go on stage if you want to reach V-tach during the demo. Or let it run untreated to show the crash, then **Reset**.
+- Watch the **skeleton hands** in the room view: they carry out each order on his body as the chat happens (pill, syringe, electrodes, paddles, CPR).
 - Two views: **Bed 13** (the patient in bed, with the heart glowing in his chest) and **OR view** (zoomed in on the heart). ⇄ swaps which one is big.
 - In the OR view, tap the green dots for teaching labels. The legend explains the colours, and "Hide anatomy colours" leaves only the targets.
 - **Guided mode** / **Exam mode** (host only) toggles the hints.
