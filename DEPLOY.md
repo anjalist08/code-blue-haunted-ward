@@ -74,5 +74,9 @@ Logs are in `/opt/code-blue/logs/` (`actors.log`, `api.log`, `web.log`).
   (`LLM_BUDGET_CALLS`, default 1500 agent calls) and voice sessions hang up after `VOICE_MAX_SECONDS`.
   Also set a hard limit in the OpenAI dashboard.
 - Pause or delete the VM after the event: `npx freestyle@latest vm delete code-blue-haunted-ward`.
-- Agent Relay: the VM uses hosted Relay (a workspace is created on first start). If that's unreachable,
-  the app falls back to its in-process bus and the header shows **Local bus**.
+- Agent Relay: the VM runs Agent Relay's open-source server itself (Node 22 + `@relaycast/engine`, on
+  port 8787, supervised like the rest), so the header shows **Agent Relay** without depending on the hosted
+  service. To use hosted Relay instead: `FREESTYLE_RELAY=hosted bun run deploy:freestyle`. If Relay can't
+  start at all, the app falls back to its in-process bus and the header shows **Local bus**.
+- Voice on phones: open the `https://` address in Safari or Chrome (not a QR scanner's in-app browser),
+  tap **Voice**, and allow the microphone. If it was denied once, the app explains how to re-allow it.

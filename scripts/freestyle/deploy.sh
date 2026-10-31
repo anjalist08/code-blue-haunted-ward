@@ -39,7 +39,8 @@ step "3/5 Package + upload (commit $(git rev-parse --short HEAD))"
 TMP="$(mktemp -d)"
 trap 'rm -rf "$TMP"' EXIT
 git archive --format=tar.gz -o "$TMP/code-blue.tgz" HEAD
-# VM .env: your keys, with the public URL (so QR codes point at it) and hosted Agent Relay.
+# VM .env: your keys, with the public URL (so QR codes point at it). Agent Relay runs on the VM
+# itself (remote-setup.sh adds RELAY_BASE_URL); set FREESTYLE_RELAY=hosted to use hosted Relay instead.
 grep -v -E '^(PUBLIC_URL|RELAY_BASE_URL|RELAY_WORKSPACE_KEY|DURABLE_ACTORS_[A-Z_]+|PORT|API_PORT)=' .env > "$TMP/code-blue.env" || true
 {
     echo "PUBLIC_URL=$URL"
@@ -47,6 +48,7 @@ grep -v -E '^(PUBLIC_URL|RELAY_BASE_URL|RELAY_WORKSPACE_KEY|DURABLE_ACTORS_[A-Z_
     echo "DURABLE_ACTORS_PORT=7100"
     echo "PORT=3000"
     echo "API_PORT=3001"
+    [ "${FREESTYLE_RELAY:-local}" = hosted ] && echo "RELAY_BASE_URL=https://cast.agentrelay.com"
 } >> "$TMP/code-blue.env"
 fs vm scp "$TMP/code-blue.tgz" "$VM_ID:/tmp/code-blue.tgz" || die "Upload failed"
 fs vm scp "$TMP/code-blue.env" "$VM_ID:/tmp/code-blue.env" || die "Upload failed"

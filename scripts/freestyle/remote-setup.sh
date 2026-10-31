@@ -28,6 +28,41 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 need bun || curl -fsSL https://bun.sh/install | bash >/dev/null
 bun --version
 
+log "Agent Relay server (self-hosted, so the care team talks over real Relay on this VM)"
+# The Relay engine uses better-sqlite3, a native Node module, so it needs Node (not Bun).
+RELAY_DIR=/opt/relaycast
+[ "$(id -u)" = 0 ] || RELAY_DIR="$HOME/relaycast"
+RELAY_OK=""
+NODE_DIR=/opt/node
+[ "$(id -u)" = 0 ] || NODE_DIR="$HOME/.node"
+node_major() { "$1" -e 'console.log(process.versions.node.split(".")[0])' 2>/dev/null || echo 0; }
+NODE_BIN="$(command -v node || true)"
+if [ -z "$NODE_BIN" ] || [ "$(node_major "$NODE_BIN")" -lt 20 ]; then
+    NODE_BIN="$NODE_DIR/bin/node"
+    if [ ! -x "$NODE_BIN" ]; then
+        case "$(uname -m)" in x86_64) NARCH=x64 ;; aarch64|arm64) NARCH=arm64 ;; *) NARCH="" ;; esac
+        if [ -n "$NARCH" ]; then
+            NODE_VER="$(curl -fsSL https://nodejs.org/dist/index.json | grep -o '"version":"v22[^"]*"' | head -1 | cut -d'"' -f4 || true)"
+            NODE_VER="${NODE_VER:-v22.12.0}"
+            mkdir -p "$NODE_DIR"
+            curl -fsSL "https://nodejs.org/dist/$NODE_VER/node-$NODE_VER-linux-$NARCH.tar.gz" | tar -xz -C "$NODE_DIR" --strip-components=1 || true
+        fi
+    fi
+fi
+if [ -x "$NODE_BIN" ]; then
+    echo "node $("$NODE_BIN" --version)"
+    mkdir -p "$RELAY_DIR"
+    if PATH="$(dirname "$NODE_BIN"):$PATH" npm install --prefix "$RELAY_DIR" --no-audit --no-fund --omit=dev --silent @relaycast/engine@12 >/dev/null 2>&1 \
+        && [ -f "$RELAY_DIR/node_modules/@relaycast/engine/dist/bin/serve.js" ]; then
+        RELAY_OK=1
+        echo "relay engine installed"
+    else
+        echo "⚠️  couldn't install the Relay engine; agents will use the in-process bus"
+    fi
+else
+    echo "⚠️  no Node available; agents will use the in-process bus"
+fi
+
 log "App → $APP"
 # Stop a previous deployment before replacing its files.
 if [ -z "${CODE_BLUE_NO_SERVICE:-}" ] && need systemctl && [ -d /run/systemd/system ]; then $SUDO systemctl stop code-blue 2>/dev/null || true; fi
@@ -35,12 +70,18 @@ pkill -f "$APP/run.sh" 2>/dev/null || true
 pkill -f "durable-actors dev" 2>/dev/null || true
 pkill -f "src/server/index.ts" 2>/dev/null || true
 pkill -f "vite preview" 2>/dev/null || true
+pkill -f "relaycast/engine/dist/bin/serve.js" 2>/dev/null || true
 sleep 1
 mkdir -p "$APP"
 # Keep durable state (.durable-actors = patients, .ward = rooms/Relay identities) across redeploys.
 find "$APP" -mindepth 1 -maxdepth 1 ! -name .durable-actors ! -name .ward ! -name logs -exec rm -rf {} +
 tar -xzf /tmp/code-blue.tgz -C "$APP"
 cp /tmp/code-blue.env "$APP/.env"
+if [ -n "$RELAY_OK" ] && ! grep -q '^RELAY_BASE_URL=.' "$APP/.env"; then
+    grep -v '^RELAY_BASE_URL=' "$APP/.env" > "$APP/.env.tmp" || true
+    echo "RELAY_BASE_URL=http://127.0.0.1:8787" >> "$APP/.env.tmp"
+    mv "$APP/.env.tmp" "$APP/.env"
+fi
 chmod 600 "$APP/.env"
 
 log "Install + build"
@@ -66,6 +107,10 @@ supervise() {
         sleep 2
     done
 }
+if [ -n "$RELAY_OK" ]; then
+    mkdir -p .ward
+    supervise relay "$NODE_BIN" "$RELAY_DIR/node_modules/@relaycast/engine/dist/bin/serve.js" --db "$APP/.ward/relaycast.db" --port 8787 &
+fi
 supervise actors bunx durable-actors dev --no-watch &
 for i in \$(seq 1 60); do grep -q "Ready" logs/actors.log 2>/dev/null && break; sleep 1; done
 supervise api bun src/server/index.ts &
