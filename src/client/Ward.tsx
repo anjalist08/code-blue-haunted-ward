@@ -47,7 +47,7 @@ export function Ward({ code }: { code: string }) {
     const notify = (text: string) => {
         setToast(text)
         clearTimeout(toastTimer.current)
-        toastTimer.current = setTimeout(() => setToast(null), 3800)
+        toastTimer.current = setTimeout(() => setToast(null), Math.min(12000, 3800 + text.length * 45)) // long help stays readable
     }
     const act = (fn: () => Promise<unknown>) => () => void fn().catch(e => notify((e as Error).message))
     const joinUrl = `${config?.joinBase ?? location.origin}/join/${code}`
@@ -144,7 +144,11 @@ export function Ward({ code }: { code: string }) {
             )}
 
             {debriefOpen && <Debrief state={state} rooms={rooms} onClose={() => setDebriefOpen(false)} />}
-            {toast && <div className="toast">{toast}</div>}
+            {toast && (
+                <div className="toast" role="status" onClick={() => setToast(null)}>
+                    {toast}
+                </div>
+            )}
             <div className="footnote">
                 Educational simulation, not medical advice.{model?.credit ? ` Heart model: ${model.credit}.` : ""} · {who.role === "observer" ? "👁" : "🩺"} {who.name}
             </div>
