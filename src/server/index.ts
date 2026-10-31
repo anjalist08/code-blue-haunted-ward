@@ -8,7 +8,7 @@ import { askPatient, askTeam, debrief, interpret, placeOrder, startAgents } from
 import { busStatus, ensureRoom, startBus } from "./bus"
 import { config } from "./config"
 import { llmStats } from "./llm"
-import { canOrder, createRoom, getState, grantFor, issueToken, normalizeCode, roomExists, verifyToken, ward, watch, type Identity } from "./rooms"
+import { canOrder, createRoom, getState, grantFor, issueToken, normalizeCode, rewatchRunningRooms, roomExists, verifyToken, ward, watch, type Identity } from "./rooms"
 import { instructions, mintVoiceSession } from "./voice"
 
 const json = (data: unknown, status = 200) => new Response(JSON.stringify(data), { status, headers: { "Content-Type": "application/json", "Cache-Control": "no-store" } })
@@ -179,6 +179,7 @@ async function handle(req: Request): Promise<Response> {
 const status = await startBus()
 console.log(`[relay] ${status.mode}: ${status.detail}${status.workspace ? ` (workspace ${status.workspace})` : ""}`)
 startAgents()
+void rewatchRunningRooms().then(codes => codes.length && console.log(`[watch] re-attached to running rooms: ${codes.join(", ")}`))
 
 Bun.serve({
     port: config.port,

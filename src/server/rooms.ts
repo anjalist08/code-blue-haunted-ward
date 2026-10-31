@@ -74,10 +74,10 @@ export async function getState(code: string): Promise<WardState> {
     return fresh
 }
 
-export async function watch(code: string): Promise<void> {
+export async function watch(code: string, opts: { reconnect?: boolean } = {}): Promise<void> {
+    if (!opts.reconnect) touched.set(code, Date.now())
     const existing = watchers.get(code)
     if (existing && (existing.readyState === WebSocket.OPEN || existing.readyState === WebSocket.CONNECTING)) return
-    touched.set(code, Date.now())
     const grant = await actors.WardRoom.prepareWebsocket({ actorId: code, metadata: { id: "agents", name: "Care team", role: "agent" } })
     const socket = new WebSocket(grant.websocketUrl)
     watchers.set(code, socket)
@@ -97,8 +97,26 @@ export async function watch(code: string): Promise<void> {
     socket.onclose = () => {
         if (watchers.get(code) === socket) watchers.delete(code)
         // Reconnect while the room is in use (touched in the last 45 min). Grants are single-use.
-        if (Date.now() - (touched.get(code) ?? 0) < 45 * 60000) setTimeout(() => void watch(code).catch(() => undefined), 3000)
+        if (Date.now() - (touched.get(code) ?? 0) < 45 * 60000) setTimeout(() => void watch(code, { reconnect: true }).catch(() => undefined), 3000)
     }
+}
+
+/** After a backend restart, re-attach the agents to every recent room whose case is still running. */
+export async function rewatchRunningRooms(): Promise<string[]> {
+    const recent = [...rooms.values()].filter(r => Date.now() - r.createdAt < 12 * 3600_000)
+    const running: string[] = []
+    for (const r of recent) {
+        try {
+            const s = await ward(r.code).getState()
+            if (s.phase === "running") {
+                running.push(r.code)
+                await watch(r.code)
+            }
+        } catch {
+            /* actor runtime not up yet; rooms re-watch on the next request */
+        }
+    }
+    return running
 }
 
 export async function grantFor(code: string, identity: Identity) {
