@@ -109,3 +109,48 @@ Tips:
 | Phone can't open the QR link | Same Wi-Fi? Firewall prompt? Venue Wi-Fi isolating clients? Use a phone hotspot or the cloudflared tunnel. |
 | Voice button shows an error about WebRTC | The network blocks WebRTC. Try a phone hotspot. |
 | Heart is the procedural one | `public/models/heart.glb` is missing or not a GLB. Try `?heart=/models/heart.glb` and check the browser console. |
+
+## 5. Student walkthrough: every feature in ~6 minutes
+
+Two devices: the **laptop** on the projector (host, opens the ward) and **your phone** (you, the student doctor). Timings come from the physiology model: untreated, PVCs start at ~1:35 and V-tach at ~2:55 (the `+m:ss` clock in the header). **Hold the aspirin until after the cardioversion**: given early, it delays V-tach to ~5 min (and he can't chew it during V-tach anyway).
+
+| Clock | Where | Input (type it, tap it, or say it with 🎙️ Voice) | What it shows |
+| --- | --- | --- | --- |
+| before | Laptop | Open Bed 13 → 🔈 sound on | Lobby QR code |
+| before | Phone | Scan the QR → name → **Join as Doctor** | QR join; your name appears in the header |
+| 0:00 | Phone | **▶ Start the night shift** | Nurse's handoff; heart, ECG and skeleton hands come alive |
+| 0:10 | Phone | `Do you take any medications?` | Patient admits the "little blue pill" (sildenafil); skeleton hand on his shoulder |
+| 0:20 | Phone | `How bad is the pain?` | Patient answers in character (AI) |
+| 0:30 | Phone | `Activate the cath lab` | Attending **declines**: "Show me a 12-lead first" (Relay: nurse → attending → nurse) |
+| 0:40 | Laptop 🎙️ | Say **"Get a troponin and an ECG"** | Voice → two orders; lab tech; hands place electrodes, then draw blood; ECG shows inferior STEMI; attending asks a teaching question |
+| 1:00 | Phone | `Give nitroglycerin` | **Pharmacist holds it** (sildenafil trap); purple ring on the RCA in the OR view |
+| 1:10 | Phone | `Put him on oxygen` | Hands fit the nasal cannula |
+| 1:20 | Phone | `Nurse, what's his blood pressure doing?` | Nurse answers from the chart (AI) |
+| 1:35 | Phone | **Close the tab.** Wait 30 s. Scan the QR again (or reopen) | **Durable actor**: he kept getting worse (PVCs) while you were gone |
+| ~2:55 | Both | Wait for **V-TACH**: lights flicker, red alarm, the room glows red | The crash |
+| V-tach +5 s | Phone | `Push 2 of midazolam` | Pharmacist warns about BP; hands push the syringe into the IV |
+| V-tach +10 s | Phone | `Synchronized cardioversion 100 joules` | Paddles on his chest + jolt; OR view: arcs between the pads → **sinus**. If the nurse says "still in V-tach", send it again. You have ~45 s before V-fib. |
+| ~3:10 | Phone | `Chew 324 of aspirin` | Pill to the mouth; yellow ring on the clot |
+| ~3:15 | Phone | `Amiodarone 150 IV` | Calms the irritable ventricles |
+| ~3:20 | Phone | `Call the cath lab` | Approved this time (ECG done); **press ⇄** for the big OR view: catheter goes down the aorta into the RCA, 60 s countdown |
+| ~4:05 | OR view | (watch) | Stent appears, the RCA fills red, blood flows; "Cath lab here… TIMI 3 flow" |
+| ~4:10 | Phone | `Start heparin` and `Give a 500 bolus of saline` | Syringe in the IV; hand squeezes the saline bag |
+| ~5:05 | Both | (watch) | **Stabilized**: lights stop flickering |
+| end | Laptop | **📋 Debrief → Generate AI debrief** | Attending reviews your timeline: ECG time, aspirin time, the nitro trap, the cardioversion |
+
+While you wait (1:35 → 2:55):
+
+- OR view: tap the **green dots** for teaching labels; **Hide/Show anatomy colours** in the legend.
+- Laptop (host): **Guided mode → Exam mode** hides the AI suggestions and shows the full order menu. Switch it back after.
+- Drag to orbit either 3D view.
+
+### Alternative branch: show V-fib and a code (instead of the cardioversion row)
+
+| When | Input | What happens |
+| --- | --- | --- |
+| In V-tach | `Shock him, unsynchronized` | The trap: shock on a perfusing rhythm → **V-fib**, CODE BLUE |
+| V-fib | `Start CPR` | Skeleton hands compress the sternum; the heart squeezes in the OR view |
+| V-fib | `Defibrillate 200 joules` | Organized rhythm, pulse back (~70% per shock; repeat if needed) |
+| No pulse | `Epinephrine 1 mg` | Arrest-dose epi |
+
+Then carry on from the aspirin row. Want to see him die? Do nothing after V-tach: V-fib ~3:30, asystole ~4:40, death ~5:45, then debrief, then **↺ Reset**.
