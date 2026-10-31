@@ -2,7 +2,9 @@
   "name": "code-blue-haunted-ward",
   "private": true,
   "type": "module",
-  "engines": { "bun": ">=1.4.2" },
+  "engines": {
+    "bun": ">=1.4.2"
+  },
   "scripts": {
     "dev:actors": "durable-actors dev",
     "dev:relay": "bun scripts/relay-local.ts",
@@ -12,7 +14,9 @@
     "generate": "durable-actors generate src/actors.ts",
     "typecheck": "tsc --noEmit",
     "test": "bun test",
-    "build": "durable-actors generate src/actors.ts && tsc --noEmit && vite build"
+    "build": "durable-actors generate src/actors.ts && tsc --noEmit && vite build",
+    "serve": "bun scripts/serve.ts",
+    "deploy:freestyle": "bash scripts/freestyle/deploy.sh"
   },
   "dependencies": {
     "@agent-relay/sdk": "^15.0.1",
@@ -35,5 +39,7 @@
     "typescript": "~5.9.3",
     "vite": "^7.0.0"
   },
-  "trustedDependencies": ["esbuild"]
+  "trustedDependencies": [
+    "esbuild"
+  ]
 }
