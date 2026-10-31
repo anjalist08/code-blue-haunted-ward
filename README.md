@@ -19,6 +19,8 @@ A multiplayer, real-time hospital-room simulator for med students. It's 3:00 AM,
 
 ## Run it
 
+Step-by-step demo runbook: [DEMO.md](DEMO.md).
+
 You need [Bun](https://bun.sh) ≥ 1.4.2 and Node 22 (for the optional local Relay server).
 
 ```bash
