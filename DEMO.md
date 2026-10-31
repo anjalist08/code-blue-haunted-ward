@@ -33,7 +33,7 @@ If your shell already exports an `OPENAI_API_KEY`, it overrides `.env`. Clear it
 unset OPENAI_API_KEY
 ```
 
-Optional: put your heart model at `public/models/heart.glb` (NIH 3D "Human Heart 3d Model", https://3d.nih.gov/entries/3DPX-022787). Without it you get the procedural heart.
+The heart model (Mesh-Magnet, CC BY 4.0) is already in `public/models/heart.glb`.
 
 ## 2. Start it (two terminals)
 
@@ -87,13 +87,14 @@ Voice on phones needs HTTPS. Use the laptop for voice, or run `cloudflared tunne
 | 0:30 | 🎙️ Voice: "Get a troponin and an ECG" | Point at the feed: doctor → `@nurse` → `@lab-tech` → `@attending`. "The care team are agents talking over Agent Relay." |
 | 0:45 | Tap **Give nitroglycerin** | The Pharmacist holds it: "He took sildenafil." "The trap every intern falls into." |
 | 0:55 | Wait for V-tach (≈2.5 min in, or skip ahead by letting the lobby run longer before the demo). The lights flicker | "Wide and fast. Is he stable?" Tap **Midazolam**, then **Synchronized cardioversion** → back to sinus |
-| 1:10 | Tap **Aspirin** + **Activate the cath lab** | The RCA lights up on the 3D heart, and the wall recovers. |
+| 1:10 | Tap **Aspirin** + **Activate the cath lab**, then press ⇄ to make the OR view big | The aspirin target ring sits on the clot. The catheter goes down the aorta into the RCA, then the stent, then blood flows, and the inferior wall stops glowing purple. |
 | 1:20 | **📋 Debrief** → Generate | "An AI attending reviews every decision. One actor per patient, so it scales to every med school." |
 
 Tips:
 
 - Start the case 2 minutes before you go on stage if you want to reach V-tach during the demo. Or let it run untreated to show the crash, then **Reset**.
-- Tap the green dots on the heart for teaching labels (RCA, inferior wall, RV).
+- Two views: **Bed 13** (the patient in bed, with the heart glowing in his chest) and **OR view** (zoomed in on the heart). ⇄ swaps which one is big.
+- In the OR view, tap the green dots for teaching labels. The legend explains the colours, and "Hide anatomy colours" leaves only the targets.
 - **Guided mode** / **Exam mode** (host only) toggles the hints.
 - Kill and restart `bun run dev:actors` mid-case: the patient picks up where he left off.
 

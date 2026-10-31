@@ -1,6 +1,11 @@
 # Heart models
 
-Put your downloaded heart `.glb` files here, then list them in `models.json`.
+`heart.glb` is "Human Heart 3D Model | Anatomy | Medical Project" by Mesh-Magnet on Sketchfab
+(https://sketchfab.com/3d-models/human-heart-3d-model-anatomy-medical-project-5da08bb137014f0392c69f9997f777cd),
+licensed CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/). The texture was re-encoded from PNG to JPEG to cut the
+file from 4.4 MB to 1.3 MB; nothing else was changed.
+
+To swap in another model, put the `.glb` here and list it in `models.json`.
 The first entry that loads is used. To try another one, open the room with
 `?heart=/models/<file>.glb` on the URL.
 
@@ -24,3 +29,6 @@ npx @gltf-transform/cli optimize heart-raw.glb heart.glb --compress draco --text
 ```
 
 If no GLB is found, the app uses a procedural heart, so the demo still works.
+
+The coloured anatomy regions and the RCA path are tuned to this model's shape (upright, apex down, anterior facing +z).
+A model in a different pose needs `rotation` in `models.json`, and possibly new landmarks in `src/client/three/heartAsset.ts`.

@@ -14,7 +14,7 @@ A multiplayer, real-time hospital-room simulator for med students. It's 3:00 AM,
 | **Care team** (Agent Relay) | `src/server/agents.ts`, `src/server/bus.ts` | One Relay channel per room (`#ward-<code>`). Agents address each other with `@handles`, e.g. doctor desk → `@nurse` → `@pharmacist` / `@lab-tech` / `@attending` → `@nurse` → actor → `@doctor`. A listen-only `scribe` agent mirrors every message into the on-screen feed. |
 | **Brain** | `src/server/llm.ts` | `gpt-4.1-mini` for the Attending's Socratic teaching, "what next?" options (cached per phase), free-text and voice order parsing, the patient's typed replies, and the debrief. Every call has a scripted fallback, a timeout, and a per-process call budget. |
 | **Voice** | `src/server/voice.ts`, `src/client/voice.ts` | OpenAI Realtime (`gpt-realtime-mini`) over WebRTC. The model **is the patient**. When a student says an order, the model calls `place_order`, which follows the same path as a tapped option. The patient's condition is pushed into the session as he deteriorates, and in V-fib he goes silent. Sessions auto-hang-up after `VOICE_MAX_SECONDS`. |
-| **3D heart** | `src/client/components/HeartScene.tsx` | Loads **your GLB heart** from `public/models/`. Rhythm drives the beat: a squeeze in sinus, fast and shallow in V-tach, quivering in V-fib, still in asystole. The RCA is drawn with its clot, the inferior wall darkens as perfusion falls, and both recover after PCI. Tap the green hotspots for teaching labels. Lights flicker and the room glows red when he crashes. |
+| **3D views** | `src/client/components/SceneViews.tsx`, `RoomScene.tsx`, `OperatingScene.tsx`, `HeartModel.tsx` | Two live views, swappable with ⇄. **Room view**: Bed 13 at night, the patient lying in bed, translucent, with his heart glowing and beating inside his chest, wired to a monitor showing the live ECG. **OR view**: zoomed in on the heart we're operating on. Anatomy is painted onto the GLB in colour (LV, RV, inferior wall, atria, SA node), the culprit RCA and its clot sit on the real surface, and the **current order's target** gets a ring and a label (aspirin → the clot, ECG → the inferior wall, fluids → the RV, shocks → the ventricles). The procedure plays out on the heart: the catheter goes in, the stent goes in and blood flows after PCI, drug particles travel down the RCA, and shocks send arcs between the pads. Rhythm drives the beat, CPR squeezes it, and the lights flicker when he crashes. |
 | **QR join** | `src/server/index.ts`, `src/client/Landing.tsx` | The big screen shows a QR code + 4-letter code. Phones open `/join/<code>`, pick a name, and join as **Doctor** (can order) or **Watch only**. Join tokens are HMAC-signed, so they survive server restarts. |
 
 ## Run it
@@ -64,9 +64,9 @@ Then set `PUBLIC_URL=https://<the-tunnel>.trycloudflare.com` in `.env` and resta
 
 > If your shell already exports `OPENAI_API_KEY`, it overrides `.env`. Run `unset OPENAI_API_KEY` first if the server logs 401s.
 
-### Your heart GLB
+### Heart model
 
-Drop the downloaded model into `public/models/heart.glb` (or list several in `public/models/models.json`). It is auto-centered and scaled. Use `rotation` / `color` in `models.json` to orient or recolor it, and `?heart=/models/other.glb` on the URL to try another one. See [`public/models/README.md`](public/models/README.md) for compression tips and sources (NIH 3D heart, public domain). Without a GLB, a procedural heart is used.
+The heart is ["Human Heart 3D Model | Anatomy | Medical Project"](https://sketchfab.com/3d-models/human-heart-3d-model-anatomy-medical-project-5da08bb137014f0392c69f9997f777cd) by **Mesh-Magnet**, licensed **CC BY 4.0**. Its texture was re-encoded to JPEG (4.4 MB → 1.3 MB). The credit appears on screen. To use another GLB, see [`public/models/README.md`](public/models/README.md). Anatomy regions are computed from the model's normalized coordinates (`src/client/three/heartAsset.ts`), so a very different model may need the landmarks re-tuned.
 
 ## Budget guards ($100 credit)
 
