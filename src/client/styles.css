@@ -1027,3 +1027,15 @@ h3 {
         order: 1;
     }
 }
+
+.crew-caption {
+    background: rgba(2, 10, 8, 0.88);
+    border: 1px solid rgba(233, 225, 204, 0.6);
+    color: #f1ead6;
+    border-radius: 8px;
+    padding: 4px 9px;
+    font-size: 12px;
+    white-space: nowrap;
+    pointer-events: none;
+    text-shadow: 0 0 8px rgba(92, 255, 176, 0.5);
+}

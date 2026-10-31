@@ -6,6 +6,7 @@ import * as THREE from "three"
 import type { WardState } from "../../sim/types"
 import { ecgSample, type BeatClock } from "../beat"
 import { HeartModel } from "./HeartModel"
+import { SkeletonHands } from "./SkeletonHands"
 
 // Bed 13 at 3 AM: the patient on the bed, translucent so the beating heart glows inside his chest,
 // wired to a monitor that shows the live ECG. Haunted lighting, and a visitor at the foot of the bed.
@@ -36,7 +37,8 @@ export function RoomScene({ state, clock, close = false }: { state: WardState | 
             <CrashCart state={state} />
             <OrLamp />
             <Visitor state={state} />
-            <OrbitControls target={close ? [-0.4, 0.62, 0] : [-0.2, 0.75, 0]} enablePan={false} minDistance={1.0} maxDistance={7} autoRotate autoRotateSpeed={0.25} maxPolarAngle={Math.PI * 0.49} />
+            <SkeletonHands state={state} captions={close} />
+            <OrbitControls target={close ? [-0.62, 0.92, 0.1] : [-0.2, 0.75, 0]} enablePan={false} minDistance={1.0} maxDistance={7} autoRotate={!close} autoRotateSpeed={0.25} maxPolarAngle={Math.PI * 0.49} />
         </>
     )
 }
@@ -285,7 +287,7 @@ function Leads() {
 
 function IvPole() {
     return (
-        <group position={[-0.9, 0, 0.75]}>
+        <group position={[-1.4, 0, 0.62]}>
             <mesh position={[0, 1.0, 0]}>
                 <cylinderGeometry args={[0.018, 0.018, 2.0, 8]} />
                 <meshStandardMaterial color="#9aa6aa" metalness={0.8} roughness={0.3} />
