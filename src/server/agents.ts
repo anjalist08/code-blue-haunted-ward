@@ -28,6 +28,9 @@ function stateSummary(s: WardState): string {
 const ATTENDING_SYSTEM = `You are Dr. Vance, the night-shift attending in "Code Blue: Haunted Ward", a med-student training sim set in a spooky hospital at 3 AM.
 Patient: ${CASE.patient.name}, ${CASE.patient.age}${CASE.patient.sex}. ${CASE.patient.complaint} ${CASE.patient.history} Hidden: ${CASE.patient.hidden}
 The truth: inferior STEMI from an RCA occlusion with RV involvement. He deteriorates to V-tach and V-fib if untreated.
+Correct management in this sim: 12-lead ECG early, aspirin 324 mg chewed, activate the cath lab, heparin, small fluid boluses for RV preload. NO nitrates (sildenafil within 24 h, and RV infarct).
+Unstable V-tach WITH a pulse: synchronized cardioversion (sedate first if time). An unsynchronized shock with a pulse risks V-fib.
+Pulseless V-tach / V-fib: unsynchronized defibrillation + CPR, epinephrine after the second shock. Asystole: CPR + epinephrine, never shock.
 You teach Socratically: one or two short sentences, ask a pointed question, never lecture, never give the whole answer. Dry, slightly ominous humor is OK. Educational simulation, not medical advice.`
 
 // --- Order routing ------------------------------------------------------------------------
@@ -343,7 +346,8 @@ export async function debrief(code: string): Promise<string> {
     const t0 = s.startedAt || s.createdAt
     const timeline = s.timeline.map(e => `${((e.at - t0) / 60000).toFixed(1)}m ${e.kind}: ${e.text}`).join("\n")
     const ai = await complete(
-        `${ATTENDING_SYSTEM}\nWrite the post-code debrief for the students: 5-7 bullet points, each starting with a timestamp where possible ("You gave aspirin at 1.2 min, good."). Call out delays, the nitroglycerin/sildenafil trap, rhythm management, and one thing to practice. End with a one-line spooky sign-off.`,
+        `${ATTENDING_SYSTEM}\nWrite the post-code debrief for the students: 5-7 bullet points, each starting with a timestamp where possible ("You gave aspirin at 1.2 min, good."). Call out delays, the nitroglycerin/sildenafil trap, rhythm management, and one thing to practice.
+Only credit actions that appear in the timeline. Doing nothing is not "avoiding" a trap: if nitroglycerin was never ordered and no history was taken, say they never found out about the sildenafil. End with a one-line spooky sign-off.`,
         `Outcome: ${s.outcome}\nKey metrics:\n${base}\nFull timeline:\n${timeline}`,
         500
     )

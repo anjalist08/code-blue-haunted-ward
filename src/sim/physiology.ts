@@ -358,7 +358,11 @@ export function scriptedDebrief(state: WardState): string {
         `12-lead ECG: ${mins(ecg)} (goal < 10 min from arrival)`,
         `Aspirin: ${mins(asa)}`,
         `Cath lab activation: ${mins(cath)}`,
-        nitroOrdered ? `Nitroglycerin ordered at ${((nitroOrdered.at - t0) / 60000).toFixed(1)} min. ${nitroOrdered.status === "held" ? "Pharmacist held it: sildenafil within 24 h." : "It was given, and his pressure crashed."}` : "Avoided the nitroglycerin trap.",
+        nitroOrdered
+            ? `Nitroglycerin ordered at ${((nitroOrdered.at - t0) / 60000).toFixed(1)} min. ${nitroOrdered.status === "held" ? "Pharmacist held it: sildenafil within 24 h." : "It was given, and his pressure crashed."}`
+            : state.phys.historyTaken
+              ? "History taken: sildenafil found, no nitrates ordered. 👍"
+              : "Nobody asked about his meds, so the sildenafil was never found.",
         ...state.timeline.filter(e => e.kind === "rhythm" || e.kind === "refused").map(e => `• ${((e.at - t0) / 60000).toFixed(1)} min: ${e.text}`)
     ]
     return lines.join("\n")
