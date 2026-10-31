@@ -268,6 +268,9 @@ async function refreshOptions(code: string, s: WardState) {
     inflight.add(code)
     try {
         let options = optionsCache.get(phase)
+        // Arrhythmias and arrests get the scripted, ACLS-correct options: no model creativity there.
+        const critical = !s.vitals.pulse || s.vitals.rhythm === "vtach" || s.outcome !== "ongoing"
+        if (critical) options = scriptedOptions(s)
         if (!options) {
             const generated = await completeJson<{ options: Array<{ label: string; category: Category; why: string; risk: NextOption["risk"]; orderKey: string }> }>(
                 `${ATTENDING_SYSTEM}\nGenerate the student's "What do you do next?" options. Exactly 4 options: one clearly good, one or two plausible, one tempting trap. Use only these orderKeys: ${CATALOG.map(c => c.key).join(", ")}.
@@ -279,7 +282,9 @@ Return {"options":[{"label","category":"assess|order|treat|escalate","why","risk
                 .filter(o => catalogByKey.has(o.orderKey) && ["good", "plausible", "trap"].includes(o.risk))
                 .slice(0, 4)
                 .map((o, i) => ({ id: `${o.orderKey}-${i}`, orderKey: o.orderKey, label: o.label || catalogByKey.get(o.orderKey)!.label, category: catalogByKey.get(o.orderKey)!.category, why: o.why, risk: o.risk }))
-            options = valid.length >= 3 && valid.some(o => o.risk === "good") ? valid : scriptedOptions(s)
+            // The model's "good" pick must match one the case file agrees is correct.
+            const correct = new Set(scriptedOptions(s).filter(o => o.risk === "good").map(o => o.orderKey))
+            options = valid.length >= 3 && valid.some(o => o.risk === "good" && correct.has(o.orderKey)) ? valid : scriptedOptions(s)
             optionsCache.set(phase, options)
         }
         // Shuffle so the good option isn't always first.
