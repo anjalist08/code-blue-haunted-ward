@@ -4,8 +4,6 @@ A multiplayer, real-time hospital-room simulator for med students. It's 3:00 AM,
 
 > Educational simulation, not medical advice.
 
-![Running case](docs/screenshots/3-running.png)
-
 ## What's in it
 
 | Piece | Where | What it does |
