@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Publish Code Blue: Haunted Ward on a Freestyle VM, at https://<slug>.style.dev
 #
-#   1. Redeem credits:  https://dash.freestyle.sh/redeem/SPOOKYTHON2026
+#   1. Redeem credits:  the redeem link on your event voucher (not stored in this repo)
 #   2. Log in once:     npx freestyle@latest login      (or export FREESTYLE_API_KEY=...)
 #   3. From the repo:   bun run deploy:freestyle
 #
