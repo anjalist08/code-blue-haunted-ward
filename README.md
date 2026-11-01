@@ -2,6 +2,8 @@
 
 A multiplayer, real-time hospital-room simulator for med students. It's 3:00 AM, Bed 13. Mr. Holloway's inferior STEMI keeps getting worse whether or not anyone is in the room. Students join from their phones by scanning a QR code (or typing a 4-letter code) and work the case as doctors. An AI care team (Nurse, Pharmacist, Lab Tech, Attending) talks to each other over **Agent Relay**. The patient lives in a **Terse durable actor**. The patient talks back through **OpenAI Realtime** voice.
 
+**Link to website : http://code-blue-haunted-ward.style.dev/**
+
 > Educational simulation, not medical advice.
 
 ## 🎬 Demo video
