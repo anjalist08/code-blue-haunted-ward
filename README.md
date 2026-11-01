@@ -10,7 +10,7 @@ A multiplayer, real-time hospital-room simulator for med students. It's 3:00 AM,
 
 ▶️ **Watch:** https://youtu.be/jmDGdqn56ms
 
-**Live:** https://code-blue-haunted-ward.style.dev (hosted on Freestyle, see [DEPLOY.md](DEPLOY.md))
+**Live:** https://code-blue-haunted-ward.style.dev (hosted on Freestyle)
 
 ## Student demo walkthrough (~6 minutes, every feature)
 
@@ -78,7 +78,7 @@ The AI replies are worded differently every run; the timings and the order of ev
 
 ## Run it
 
-Step-by-step demo runbook: [DEMO.md](DEMO.md). Publish it on Freestyle: [DEPLOY.md](DEPLOY.md) (`bun run deploy:freestyle`).
+Step-by-step demo runbook: [DEMO.md](DEMO.md). Publish it on Freestyle: `bun run deploy:freestyle`.
 
 You need [Bun](https://bun.sh) ≥ 1.4.2 and Node 22 (for the optional local Relay server).
 
