@@ -64,6 +64,18 @@ Use the `+m:ss` clock in the header. Type each input, tap the matching option, o
 
 The AI replies are worded differently every run; the timings and the order of events come from the physiology model and stay the same.
 
+## Bringing it back online
+
+The live site may be switched off to save credits. Everything needed to restart it is in this repo:
+
+1. Install [Bun](https://bun.sh) ≥ 1.4.2: `curl -fsSL https://bun.sh/install | bash`
+2. Get the code (`git clone https://github.com/anjalist08/code-blue-haunted-ward`, or `git pull origin main`), then `bun install`
+3. `cp .env.example .env` and add a **new** OpenAI key (https://platform.openai.com/api-keys)
+4. Make sure your Freestyle account has credit (https://dash.freestyle.sh), then `bunx freestyle@latest login`
+5. `bun run deploy:freestyle` → https://code-blue-haunted-ward.style.dev (if that name is taken: `FREESTYLE_SLUG=another-name bun run deploy:freestyle`)
+
+Local only, no Freestyle: `bun run dev:actors` in one terminal, `bun run dev` in another, then open http://localhost:3000.
+
 ## What's in it
 
 | Piece | Where | What it does |
