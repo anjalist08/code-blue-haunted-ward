@@ -141,12 +141,6 @@ Then set `PUBLIC_URL=https://<the-tunnel>.trycloudflare.com` in `.env` and resta
 
 The heart is ["Human Heart 3D Model | Anatomy | Medical Project"](https://sketchfab.com/3d-models/human-heart-3d-model-anatomy-medical-project-5da08bb137014f0392c69f9997f777cd) by **Mesh-Magnet**, licensed **CC BY 4.0**. Its texture was re-encoded to JPEG (4.4 MB → 1.3 MB). The credit appears on screen. To use another GLB, see [`public/models/README.md`](public/models/README.md). Anatomy regions are computed from the model's normalized coordinates (`src/client/three/heartAsset.ts`), so a very different model may need the landmarks re-tuned.
 
-## Budget guards ($100 credit)
-
-- Voice is the expensive part: `gpt-realtime-mini`, one session per click, auto-hang-up after `VOICE_MAX_SECONDS` (default 180), and the mic button shows the countdown.
-- Agents use `gpt-4.1-mini` and only call the model on phase changes, results and questions. Hot-path messages (nurse, pharmacist, lab) are templated. Options are cached per phase.
-- `LLM_BUDGET_CALLS` caps agent calls per server process (default 1500). Also set a hard limit in the OpenAI dashboard.
-
 ## The 90-second demo
 
 1. Big screen: **Open Bed 13**. "Meet Mr. Holloway. He's been dying every night at 3 AM." Students scan the QR code.
